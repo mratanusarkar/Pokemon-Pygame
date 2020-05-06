@@ -11,6 +11,7 @@ HEIGHT = 600
 
 # global variables
 running = True
+gravity = 4
 
 # initialize pygame
 pygame.init()
@@ -31,6 +32,16 @@ ESC_KEY_PRESSED = 0
 # create display window
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Pokemon")
+
+# create player
+player_width = 40
+player_height = 60
+player_x = (WIDTH / 2) - (player_width / 2)
+player_y = (HEIGHT / 10) * 9 - (player_height / 2)
+player_dx = 0
+player_dy = 0
+player_d2x = 0.001
+player_d2y = 0.001
 
 
 def key_logger(key_event):
@@ -154,6 +165,34 @@ while running:
             running = False
         # Keyboard Events
         key_logger(event)
+
+    # manipulate game objects based on events and player actions
+    # player movement
+
+    if RIGHT_ARROW_KEY_PRESSED:
+        player_dx += player_d2x
+    if LEFT_ARROW_KEY_PRESSED:
+        player_dx -= player_d2x
+    if UP_ARROW_KEY_PRESSED:
+        player_dy -= player_d2y
+    if DOWN_ARROW_KEY_PRESSED:
+        player_dy += player_d2y
+    player_x += player_dx
+    player_y += player_dy
+
+    # boundary check: 0 <= x <= WIDTH, 0 <= y <= HEIGHT
+    # player
+    if player_x < 0:
+        player_x = 0
+    if player_x > WIDTH - player_width:
+        player_x = WIDTH - player_width
+    if player_y < 0:
+        player_y = 0
+    if player_y > HEIGHT - player_height:
+        player_y = HEIGHT - player_height
+
+    # create frame by placing objects on the surface
+    pygame.draw.rect(window, (255, 0, 0), (player_x, player_y, player_width, player_height))
 
     # render the display
     pygame.display.update()
