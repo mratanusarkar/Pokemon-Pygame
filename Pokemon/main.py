@@ -11,7 +11,7 @@ HEIGHT = 600
 
 # global variables
 running = True
-gravity = 4
+gravity = 0.098
 
 # initialize pygame
 pygame.init()
@@ -37,11 +37,13 @@ pygame.display.set_caption("Pokemon")
 player_width = 40
 player_height = 60
 player_x = (WIDTH / 2) - (player_width / 2)
-player_y = (HEIGHT / 10) * 9 - (player_height / 2)
-player_dx = 0
+player_y = HEIGHT
+player_dx = 2
 player_dy = 0
-player_d2x = 0.001
-player_d2y = 0.001
+player_d2x = 0
+player_d2y = 0
+player_jump_velocity = 5
+inAir = False
 
 
 def key_logger(key_event):
@@ -168,17 +170,19 @@ while running:
 
     # manipulate game objects based on events and player actions
     # player movement
-
+    # X-Axis Movement (Right & Left)
     if RIGHT_ARROW_KEY_PRESSED:
-        player_dx += player_d2x
+        player_x += player_dx
     if LEFT_ARROW_KEY_PRESSED:
-        player_dx -= player_d2x
-    if UP_ARROW_KEY_PRESSED:
-        player_dy -= player_d2y
-    if DOWN_ARROW_KEY_PRESSED:
+        player_x -= player_dx
+    # Y-Axis Movement (Jump and Gravity)
+    if (UP_ARROW_KEY_PRESSED or W_KEY_PRESSED or SPACE_BAR_PRESSED) and not inAir:
+        inAir = True
+        player_dy = -player_jump_velocity
+    if inAir:
+        player_d2y = gravity
         player_dy += player_d2y
-    player_x += player_dx
-    player_y += player_dy
+        player_y += player_dy
 
     # boundary check: 0 <= x <= WIDTH, 0 <= y <= HEIGHT
     # player
@@ -189,7 +193,10 @@ while running:
     if player_y < 0:
         player_y = 0
     if player_y > HEIGHT - player_height:
+        inAir = False
         player_y = HEIGHT - player_height
+        player_d2y = 0
+        player_dy = 0
 
     # create frame by placing objects on the surface
     pygame.draw.rect(window, (255, 0, 0), (player_x, player_y, player_width, player_height))
