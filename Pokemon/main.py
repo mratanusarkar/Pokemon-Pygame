@@ -1,20 +1,22 @@
 # Author: Atanu Sarkar
 # Pokemon (my version)
 # v0.0.0
-# 05-May-2020, 11:00 PM (IST)
+# 08-May-2020, 11:00 PM (IST)
 
 import pygame
 
 # game constants
 WIDTH = 800
 HEIGHT = 600
+FPS = 120
 
 # global variables
 running = True
 gravity = 0.098
 
-# initialize pygame
+# initialize pygame & clock
 pygame.init()
+clock = pygame.time.Clock()
 
 # Input key states (keyboard)
 LEFT_ARROW_KEY_PRESSED = 0
@@ -46,6 +48,7 @@ player_jump_velocity = 5
 inAir = False
 
 
+# Keyboard Input + Logging
 def key_logger(key_event):
     global LEFT_ARROW_KEY_PRESSED
     global RIGHT_ARROW_KEY_PRESSED
@@ -201,5 +204,11 @@ while running:
     # create frame by placing objects on the surface
     pygame.draw.rect(window, (255, 0, 0), (player_x, player_y, player_width, player_height))
 
+    # log fps
+    print("FPS:", str(int(clock.get_fps())))
+
     # render the display
     pygame.display.update()
+
+    # clock tick
+    clock.tick(FPS)
